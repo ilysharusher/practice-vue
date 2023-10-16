@@ -18,23 +18,60 @@
 
 	<h2>Task 3</h2>
 	<ul>
-		<li v-for="(quote, index) in quotes" :key="index" v-if="quote.source">{{ quote.quote }}</li>
+		<li v-for="(quote, index) in quotes" :key="index" v-if="quote && quote.source">{{ quote.quote }}</li>
 	</ul>
 
 	<h2>Task 4</h2>
 	<input type="checkbox" v-model="showQuotesWithAuthor"> Show Quotes with Author
 	<ul>
-		<li v-for="(quote, index) in quotes" :key="index" v-if="showQuotesWithAuthor || !quote.source">{{ quote.quote }}</li>
+		<li v-for="(quote, index) in quotes" :key="index" v-if="showQuotesWithAuthor || (quote && !quote.source)">{{ quote.quote }}</li>
 	</ul>
 
 	<h2>Task 5</h2>
 	<button @click="sortQuotesByLastName">Sort by Last Name</button>
 	<ul>
-		<li v-for="(quote, index) in sortedQuotes" :key="index">{{ quote.quote }}</li>
+		<li v-for="(quote, index) in quotes" :key="index">{{ quote.quote }}</li>
 	</ul>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
-<script src="main.js"></script>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                quotes: [
+                    {
+                        "quote": "This is just a Quote1",
+                        "source": "Christopher"
+                    },
+                    {
+                        "quote": "This is just a Quote2",
+                        "source": "Martin"
+                    },
+                    {
+                        "quote": "This is just a Quote3",
+                        "source": "Dennis"
+                    },
+                    {
+                        "quote": "This is just a Quote4",
+                        "source": ""
+                    },
+                ],
+                showQuotesWithAuthor: true,
+            };
+        },
+        methods: {
+            sortQuotesByLastName() {
+                this.quotes.sort((a, b) => {
+                    const authorA = (a.source || '').toLowerCase().split(' ').pop();
+                    const authorB = (b.source || '').toLowerCase().split(' ').pop();
+                    return authorA.localeCompare(authorB);
+                });
+            },
+        },
+    });
+
+    app.mount('#app');
+</script>
 </body>
 </html>
