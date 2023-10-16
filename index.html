@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+</head>
+<body>
+<div id="app">
+	<h2>Task 1</h2>
+	<ul>
+		<li v-for="(quote, index) in quotes" :key="index">{{ quote.quote }}</li>
+	</ul>
+
+	<h2>Task 2</h2>
+	<ul>
+		<li v-for="(quote, index) in quotes" :key="index" :style="{ color: quote.quote.length > 40 ? 'red' : 'black' }">{{ quote.quote }}</li>
+	</ul>
+
+	<h2>Task 3</h2>
+	<ul>
+		<li v-for="(quote, index) in quotes" :key="index" v-if="quote.source">{{ quote.quote }}</li>
+	</ul>
+
+	<h2>Task 4</h2>
+	<input type="checkbox" v-model="showQuotesWithAuthor"> Show Quotes with Author
+	<ul>
+		<li v-for="(quote, index) in quotes" :key="index" v-if="showQuotesWithAuthor || !quote.source">{{ quote.quote }}</li>
+	</ul>
+
+	<h2>Task 5</h2>
+	<button @click="sortQuotesByLastName">Sort by Last Name</button>
+	<ul>
+		<li v-for="(quote, index) in sortedQuotes" :key="index">{{ quote.quote }}</li>
+	</ul>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+<script src="main.js"></script>
+</body>
+</html>
