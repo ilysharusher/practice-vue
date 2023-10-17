@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Student Management (Options API)</title>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+</head>
+<body>
+<div id="app">
+	<h1>Student Management (Options API)</h1>
+	<input v-model="search" placeholder="Search by last name" @input="filterStudents"/>
+	<table>
+		<thead>
+		<tr>
+			<th>Name</th>
+			<th>Group</th>
+			<th>Year of Birth</th>
+			<th>Passed Practical Work</th>
+			<th>Action</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr v-for="student in filteredStudents" :key="student.id">
+			<td :style="{ backgroundColor: student.highlight ? 'yellow' : '' }">{{ student.name }}</td>
+			<td>{{ student.group }}</td>
+			<td>{{ student.yearOfBirth }}</td>
+			<td>
+				<input type="checkbox" v-model="student.passed" disabled/>
+			</td>
+			<td>
+				<button @click="deleteStudent(student.id)">Delete</button>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            students: [
+                {id: 1, name: "John Doe", group: "A", yearOfBirth: 1995, passed: true, highlight: false},
+                {id: 2, name: "Jane Smith", group: "B", yearOfBirth: 1998, passed: false, highlight: false},
+                {id: 3, name: "Alice Johnson", group: "A", yearOfBirth: 1997, passed: true, highlight: false},
+                {id: 4, name: "Bob Brown", group: "C", yearOfBirth: 1999, passed: false, highlight: false}
+            ],
+            search: ""
+        },
+        computed: {
+            filteredStudents() {
+                return this.students.filter(student =>
+                    student.name.toLowerCase().includes(this.search.toLowerCase())
+                );
+            }
+        },
+        methods: {
+            filterStudents() {
+                this.students.forEach(student => {
+                    student.highlight = student.name.toLowerCase().includes(this.search.toLowerCase());
+                });
+            },
+            deleteStudent(id) {
+                const index = this.students.findIndex(student => student.id === id);
+                if (index !== -1) {
+                    this.students.splice(index, 1);
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>
