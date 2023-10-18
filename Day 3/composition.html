@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Student Management</title>
+	<script src="https://cdn.jsdelivr.net/npm/vue@3.0.11"></script>
+</head>
+<body>
+<div id="app">
+
+	<h2>ONE</h2>
+	<span style="font-size:25px;">EnterAge:</span>
+	<input v-model.number="age" type="number"> <br>
+	<div>"{{age}}"</div>
+
+	<span style="font-size:25px;">EnterMessage:</span>
+	<input v-model.lazy="msg"> <br>
+	<div>"{{msg}}"</div>
+
+	<span style="font-size:25px;">EnterMessage : </span>
+	<input v-model.trim="message">
+	<div>"{{message}}"</div>
+
+	<h2>TWO</h2>
+
+	<div ref="cube" style="width: 200px; height: 150px; background-color: red; transition-duration: 300ms"
+		 @mouseover="mouseOver"
+		 @mouseleave="mouseLeave">
+	</div>
+
+	<h2>THREE</h2>
+	<input v-model="search" placeholder="Search by last name" @input="filterStudents"/>
+	<table>
+		<thead>
+		<tr>
+			<th>Name</th>
+			<th>Group</th>
+			<th>Passed</th>
+			<th>Action</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr v-for="student in filteredStudents" :key="student.id">
+			<td :style="{ backgroundColor: student.highlight ? 'yellow' : '' }">{{ student.name }}</td>
+			<td>{{ student.group }}</td>
+			<td>{{ student.yearOfBirth }}</td>
+			<td>
+				<input type="checkbox" v-model="student.passed" disabled/>
+			</td>
+			<td>
+				<button @click="deleteStudent(student.id)">Delete</button>
+			</td>
+		</tr>
+		</tbody>
+	</table> <br>
+	<div>
+		<div>
+			<label>
+				Username:
+				<input v-model.trim="student.username" type="text">
+			</label>
+		</div> <br>
+		<div>
+			<label>
+				Group:
+				<select v-model="student.group">
+					<option value="RPZ-20-1/9">RPZ 20 1/9</option>
+					<option value="RPZ-20-2/9">RPZ 20 2/9</option>
+				</select>
+			</label>
+		</div> <br>
+		<div>
+			<label>
+				Is he/she complete task?
+				<input type="checkbox" v-model="student.passed">
+			</label>
+		</div> <br>
+		<button class="btn" role="button" @click="addStudent">Add student</button>
+	</div>
+</div>
+
+<script>
+    const {ref, computed, watch, onMounted, reactive} = Vue;
+
+    const app = Vue.createApp({
+        setup() {
+            const search = ref("");
+            const age = ref(0);
+            const msg = ref("");
+            const message = ref("");
+            const cube = ref(null);
+            const students = ref([
+                {id: 1, username: "John Doe", group: "RPZ 20 2/9", passed: true, highlight: false},
+                {id: 2, username: "Jane Smith", group: "RPZ 20 2/9", passed: false, highlight: false},
+                {id: 3, username: "Alice Johnson", group: "RPZ 20 1/9", passed: true, highlight: false},
+                {id: 4, username: "Bob Brown", group: "RPZ 20 1/9", passed: false, highlight: false}
+            ]);
+
+            const filteredStudents = computed(() => {
+                return students.value.filter(student => student.username.toLowerCase().includes(search.value.toLowerCase()));
+            });
+
+            const filterStudents = () => {
+                students.value.forEach(student => {
+                    student.highlight = student.name.toLowerCase().includes(search.value.toLowerCase());
+                });
+            };
+
+            const deleteStudent = (id) => {
+                const index = students.value.findIndex(student => student.id === id);
+                if (index !== -1) {
+                    students.value.splice(index, 1);
+                }
+            };
+
+            watch(search, filterStudents);
+
+            function mouseOver() {
+                cube.value.style.backgroundColor = 'green'
+            }
+
+            function mouseLeave() {
+                cube.value.style.backgroundColor = 'red'
+            }
+
+            const student = reactive({
+                username: '',
+                group: '',
+                passed: false
+            })
+
+            function addStudent() {
+                students.value.push({id: students.value.slice().pop().id++, highlight: false, ...student})
+
+                student.username = ''
+                student.group = ''
+                student.task = false
+            }
+
+            return {
+                age,
+                search,
+                students,
+                filteredStudents,
+                filterStudents,
+                deleteStudent,
+				msg,
+				message,
+				mouseOver,
+				mouseLeave,
+				cube,
+				student,
+				addStudent
+            };
+        },
+    });
+
+    app.mount('#app');
+</script>
+</body>
+</html>
