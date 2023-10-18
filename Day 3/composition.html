@@ -41,7 +41,7 @@
 		</thead>
 		<tbody>
 		<tr v-for="student in filteredStudents" :key="student.id">
-			<td :style="{ backgroundColor: student.highlight ? 'yellow' : '' }">{{ student.name }}</td>
+			<td :style="{ backgroundColor: student.highlight ? 'yellow' : '' }">{{ student.username }}</td>
 			<td>{{ student.group }}</td>
 			<td>{{ student.yearOfBirth }}</td>
 			<td>
@@ -102,7 +102,7 @@
 
             const filterStudents = () => {
                 students.value.forEach(student => {
-                    student.highlight = student.name.toLowerCase().includes(search.value.toLowerCase());
+                    student.highlight = student.username.toLowerCase().includes(search.value.toLowerCase());
                 });
             };
 
