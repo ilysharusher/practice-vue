@@ -41,5 +41,9 @@ export function useStudent() {
 
     }
 
-    return {students, addStudent, updateStudent, deleteStudent}
+    function getStudentById(studentId) {
+        return axios.get(`${BaseURL}/students/${studentId}`).then(res => res.data)
+    }
+
+    return {students, addStudent, updateStudent, deleteStudent, getStudentById}
 }
