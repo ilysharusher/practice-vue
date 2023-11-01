@@ -1,10 +1,13 @@
 <script setup>
 import {reactive, ref} from "vue";
-import {useStudent} from "@/composables/api.js";
+import {useStudent} from "/src/composables/student.js";
+import {useTheme} from "../../composables/theme.js";
+import {useAuth} from "../../composables/auth.js";
 
 const search = ref('')
 
-const {students, addStudent: addStudent, updateStudent, deleteStudent} = useStudent()
+const {students, addStudent: addStudent, updateStudent, deleteStudent, studentsCount} = useStudent()
+const theme = useTheme()
 
 const newStudent = reactive({
   name: '',
@@ -15,7 +18,6 @@ const newStudent = reactive({
 function add() {
   addStudent({photo: "https://robohash.org/33", ...newStudent})
 
-  newStudent.photo = ''
   newStudent.name = ''
   newStudent.group = ''
   newStudent.isDonePr = false
@@ -45,65 +47,95 @@ function update() {
   newStudent.group = ''
   newStudent.isDonePr = false
 }
+
+const {user} = useAuth()
 </script>
 
 <template>
-  <div>
-    <input v-model="search">
+  <div :style="theme.themeStyles">
+    <button @click="theme.toggleTheme">Switch theme</button>
+    <input v-model="search" type="search">
+    <div>
+      Count of students: {{ studentsCount }}
+    </div>
     <table>
-      <tr v-for="student in students" :class="{
-        'text-red-600': student.name.includes(search) && search !== ''
-      }"
-      >
-        <td><img :src="student.photo" alt="photo" class="mt-5"></td>
+      <tr v-for="student in students" :class="{red: student.name.includes(search) && search !== ''}">
+        <td><img :src="student.photo" alt="photo" style="height: 100px"></td>
         <td>
           <router-link :to="{name: 'students.show', params: {studentId: student._id}}"> {{ student.name }}</router-link>
         </td>
         <td>{{ student.group }}</td>
         <td><input :checked="student.isDonePr" disabled type="checkbox"></td>
-        <button class="cursor-pointer" @click="deleteStudent(student._id)">Delete</button>
-        <button class="cursor-pointer" role="button" @click="edit(student)">Edit</button>
+        <td class="link" role="button" @click="edit(student)">Edit</td>
+        <td class="link" role="button" @click="deleteStudent(student._id)" v-show="student.group === user?.group">
+          Delete
+        </td>
       </tr>
     </table>
 
     <div>
       <div>
         <label>
-          photo
+          Photo:
           <input v-model.trim="newStudent.photo" type="text">
         </label>
       </div>
       <br>
       <div>
         <label>
-          Username
+          Name:
           <input v-model.trim="newStudent.name" type="text">
         </label>
       </div>
       <br>
       <div>
         <label>
-          Group
+          Group:
           <select v-model="newStudent.group">
-            <option value="RPZ-20-1/9">RPZ 20-1/9</option>
-            <option value="RPZ-20-2/9">RPZ 20-2/9</option>
+            <option value="RPZ-20-1/9">RPZ 20 1/9</option>
+            <option value="RPZ-20-2/9">RPZ 20 2/9</option>
           </select>
         </label>
       </div>
       <br>
+
       <div>
         <label>
-          complete task?
+          Is task completed:
           <input v-model="newStudent.isDonePr" type="checkbox">
         </label>
       </div>
-      <br>
-      <button v-if="editingStudentId !== ''" @click="update">Update</button>
-      <button v-else @click="add">Add student</button>
+      <button v-if="editingStudentId !== ''" class="btn" role="button" @click="update">Update</button>
+      <button v-else class="btn" role="button" @click="add">ADD</button>
     </div>
   </div>
 </template>
 
 <style scoped>
+.btn {
+  padding: 4px 20px;
+}
 
+.link {
+  text-decoration: underline;
+  color: mediumvioletred;
+  cursor: pointer;
+}
+
+.red {
+  color: darkred;
+}
+
+table {
+  margin: 10px 0;
+}
+
+table, th, td {
+  border: 1px solid darkslategrey;
+  border-collapse: collapse;
+}
+
+td {
+  padding: 4px 10px;
+}
 </style>

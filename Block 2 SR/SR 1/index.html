@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>SR 1</title>
+</head>
+<body>
+Switching themes with localStorage
+<form>
+	<label>
+		<input type="radio" name="themeNow" value="light"> To Light
+	</label>
+	<label>
+		<input type="radio" name="themeNow" value="dark"> To Dark
+	</label>
+</form>
+
+<script>
+    const switcher = document.querySelectorAll('input[type=radio][name="themeNow"]');
+    const body = document.body;
+    const themeNow = localStorage.getItem('themeNow');
+
+    function switchTheme(to) {
+        if (to.target.value === 'dark') {
+            body.classList.remove('light');
+            body.classList.add('dark');
+            localStorage.setItem('themeNow', 'dark');
+        } else {
+            body.classList.remove('dark');
+            body.classList.add('light');
+            localStorage.setItem('themeNow', 'light');
+        }
+    }
+
+    if (themeNow) {
+        body.classList.add(themeNow);
+
+        if (themeNow === 'dark') {
+            switcher[1].checked = true;
+        } else {
+            switcher[0].checked = true;
+        }
+    }
+
+    switcher.forEach(r => r.addEventListener('change', switchTheme));
+</script>
+
+</body>
+</html>
+
+<style>
+    .light {
+        background-color: antiquewhite;
+        color: darkslategray;
+    }
+
+    .dark {
+        background-color: darkslategray;
+        color: antiquewhite;
+    }
+</style>
